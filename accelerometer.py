@@ -2,7 +2,7 @@ from I2C_driver import *
 import time
 
 
-ADDRESS = 0x1D
+# ADDRESS = 0x1D
 
 #registers
 STATUS = 0x00
@@ -146,7 +146,7 @@ class acelerometer:
 
     def readPosition(self):
         regVal = self.i2c.read_data(PL_STATUS)
-        if((regVal & 0x40) == 1):
+        if(regVal & 0x40):
             position = "Flat"
         else:
             regVal = (regVal & 0x06) >> 1
@@ -161,13 +161,3 @@ class acelerometer:
                 position = "Landscape Left"
 
         return position
-
-acelerometro = acelerometer(ADDRESS)
-
-while True:
-    acelerometro.read()
-    position = acelerometro.readPosition()
-    print (position)
-    #print(str(acelerometro.x) + " " + str(acelerometro.y) + " " + str(acelerometro.z))
-    
-    time.sleep(0.3)
