@@ -1,10 +1,7 @@
 from I2C_driver import *
 import time
 
-
-# ADDRESS = 0x1D
-
-#registers
+#MMA845X Registers
 STATUS = 0x00
 OUT_X_MSB = 0x01
 OUT_X_LSB = 0x02
@@ -48,7 +45,7 @@ OFF_X = 0x2F
 OFF_Y = 0x30
 OFF_Z = 0x31
 
-class acelerometer:
+class accelerometer:
     def __init__(self, ADDR, SCALE=2, ODR=800):
         self.i2c = i2c_device(ADDR)
         self.scale = SCALE
@@ -66,11 +63,16 @@ class acelerometer:
 
 
     def standby(self):
+        """Put in standby mode"""
         regVal = self.i2c.read_data(CTRL_REG1)
         regVal = regVal & ~(0x01) #Clear the last bit
         self.i2c.write_cmd_arg(CTRL_REG1,regVal)
 
     def setScale(self,scale):
+        """Set the scale: 
+        scale=2 for +/-2g
+        scale=4 for +/-4g
+        scale=8 for +/-8g"""
         self.scale = scale
         regVal = self.i2c.read_data(XYZ_DATA_CFG)
         
@@ -89,6 +91,7 @@ class acelerometer:
         self.i2c.write_cmd_arg(XYZ_DATA_CFG,regVal)
 
     def setOdr(self,odr):
+        """Set the Output Data Rate"""
         self.odr = odr
         regVal = self.i2c.read_data(CTRL_REG1)
     
@@ -116,11 +119,14 @@ class acelerometer:
         self.i2c.write_cmd_arg(CTRL_REG1,regVal)
 
     def active(self):
+        """Starts to get data"""
         regVal = self.i2c.read_data(CTRL_REG1)
         regVal = regVal | 0x01
         self.i2c.write_cmd_arg(CTRL_REG1,regVal)
 
     def read(self):
+        """Read the instantaneous acceleration and stores it 
+        in x, y and z variables."""
         data = self.i2c.read_i2c_block_data(OUT_X_MSB,6)
 
         self.x = float((data[0] * 256 + data[1]) / 16)
@@ -145,6 +151,7 @@ class acelerometer:
 
 
     def readPosition(self):
+        """Read the orientation"""
         regVal = self.i2c.read_data(PL_STATUS)
         if(regVal & 0x40):
             position = "Flat"
