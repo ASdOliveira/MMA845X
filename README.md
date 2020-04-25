@@ -6,9 +6,6 @@ Library for use of accelerometer MMA845X and similars to use in raspberry with p
 
 You need to wiring the accelerometer to raspberry, as is descripted in [Embarcados](https://www.embarcados.com.br/acelerometro-mma845x-com-raspberry-pi/)
 
-
-After this, you can download this repo.
-
 ### Installing
 
 To use this library it is not necessary to perform any installation. Just clone in your desired folder 
